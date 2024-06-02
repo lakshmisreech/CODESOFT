@@ -1,0 +1,99 @@
+import tkinter as tk
+from tkinter import ttk
+import random
+import string
+
+def generate_password():
+    password_length = int(length_entry.get())
+    use_lower = lower_var.get()
+    use_upper = upper_var.get()
+    use_digits = digits_var.get()
+    use_special = special_var.get()
+
+    chars = ""
+    if use_lower:
+        chars += string.ascii_lowercase
+    if use_upper:
+        chars += string.ascii_uppercase
+    if use_digits:
+        chars += string.digits
+    if use_special:
+        chars += string.punctuation
+
+    if chars:
+        password = ''.join(random.choice(chars) for _ in range(password_length))
+        password_entry.delete(0, tk.END)
+        password_entry.insert(0, password)
+    else:
+        password_entry.delete(0, tk.END)
+        password_entry.insert(0, "Select at least one character set")
+
+# Create main window
+root = tk.Tk()
+root.title("Password Generator")
+root.geometry("700x600")
+root.resizable(False, False)
+root.configure(bg="#f0f0f0")
+
+# Create frame
+frame = ttk.Frame(root)
+frame.pack(pady=20)
+
+# Password Length Label and Entry
+length_label = ttk.Label(frame, text="Password Length:")
+length_label.grid(row=0, column=0, padx=10, pady=10, sticky="W")
+length_entry = ttk.Spinbox(frame, from_=6, to=100)
+length_entry.grid(row=0, column=1, padx=10, pady=10)
+length_entry.insert(0, "6")  # Default length
+
+# Password Strength Label and Buttons
+strength_label = ttk.Label(frame, text="Password Strength:")
+strength_label.grid(row=1, column=0, padx=10, pady=50, sticky="W")
+
+weak_button = ttk.Button(frame, text="Weak", command=lambda: set_strength(6))
+weak_button.grid(row=1, column=1, padx=10, pady=10)
+
+medium_button = ttk.Button(frame, text="Medium", command=lambda: set_strength(10))
+medium_button.grid(row=1, column=2, padx=10, pady=50)
+
+hard_button = ttk.Button(frame, text="Strong", command=lambda: set_strength(14))
+hard_button.grid(row=1, column=3, padx=60, pady=10)
+
+# Character Set Checkboxes
+lower_var = tk.BooleanVar()
+lower_checkbox = ttk.Checkbutton(frame, text="Lowercase", variable=lower_var)
+lower_checkbox.grid(row=2, column=0, padx=10, pady=10, sticky="W")
+lower_checkbox.invoke()  # Default to lowercase
+
+upper_var = tk.BooleanVar()
+upper_checkbox = ttk.Checkbutton(frame, text="Uppercase", variable=upper_var)
+upper_checkbox.grid(row=2, column=1, padx=10, pady=10, sticky="W")
+
+digits_var = tk.BooleanVar()
+digits_checkbox = ttk.Checkbutton(frame, text="Digits", variable=digits_var)
+digits_checkbox.grid(row=3, column=0, padx=10, pady=10, sticky="W")
+
+special_var = tk.BooleanVar()
+special_checkbox = ttk.Checkbutton(frame, text="Special Characters", variable=special_var)
+special_checkbox.grid(row=3, column=1, padx=10, pady=10, sticky="W")
+
+# Generate Button
+generate_button = ttk.Button(frame, text="Generate Password", command=generate_password, style="SkyBlue.TButton")
+generate_button.grid(row=4, column=1, columnspan=2, padx=10, pady=10, sticky="W")
+
+# Password Entry (Output)
+password_label = ttk.Label(frame, text="Generated Password:")
+password_label.grid(row=5, column=0, padx=10, pady=10, sticky="W")
+password_entry = ttk.Entry(frame, width=30)
+password_entry.grid(row=5, column=1, padx=20, pady=20, sticky="W")
+
+# Style
+style = ttk.Style()
+style.configure("SkyBlue.TButton", background="sky blue",font=("Arial",12,"bold"))
+
+def set_strength(length):
+    length_entry.delete(0, tk.END)
+    length_entry.insert(0, str(length))
+
+# Start the application
+root.mainloop()
